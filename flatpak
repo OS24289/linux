@@ -1,0 +1,29 @@
+##-------------------------------------------------------------------------------
+## flatpak
+## install flatpak
+## add flathub repo https://flathub.org/repo/flathub.flatpakrepo
+## add rhel flatpak repo https://flatpaks.redhat.io/rhel.flatpakrepo
+## install firefox from flathub
+##-------------------------------------------------------------------------------
+
+dnf install flatpak
+
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+flatpak remote-add --if-not-exists rhel https://flatpaks.redhat.io/rhel.flatpakrepo
+
+flatpak remotes
+
+flatpak search firefox
+
+flatpak install flathub org.mozilla.firefox
+
+flatpak list --app
+
+flatpak run org.mozilla.firefox
+
+flatpak update org.mozilla.firefox
+
+flatpak uninstall org.mozilla.firefox -y
+
+flatpak list --app
