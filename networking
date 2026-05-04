@@ -1,0 +1,11 @@
+## NETWORKING
+# change existing ip
+nmcli con show
+nmcli con modify ens192 ipv4.addresses 172.10.10.201/24
+nmcli con down ens192
+nmcli con up ens192
+systemctl restart NetworkManager
+
+
+
+
