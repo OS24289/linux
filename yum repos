@@ -1,0 +1,37 @@
+vi /etc/yum.repos.d/example.repo
+
+[repository-id]
+name=Example Repository
+baseurl=http://repo.example.com/rhel/10/
+enabled=1
+gpgcheck=1
+gpgkey=http://repo.example.com/rhel/10/RPM-GPG-KEY
+
+
+
+## local iso mount
+
+mount -o loop rhel-10.0-x86_64-dvd.iso /mnt
+
+[local-baseos]
+name=Local BaseOS
+baseurl=file:///mnt/BaseOS
+enabled=1
+gpgcheck=0
+
+[local-appstream]
+name=Local AppStream
+baseurl=file:///mnt/AppStream
+enabled=1
+gpgcheck=0
+
+
+
+dnf clean all
+dnf repo-list
+
+
+
+
+
+
