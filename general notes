@@ -1,0 +1,5 @@
+# general notes
+
+# create 1gb file random data
+dd if=/dev/urandom of=filename.bin bs=1M count=1000
+
