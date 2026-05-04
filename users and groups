@@ -1,0 +1,98 @@
+## ------------------------------------------------------
+## create a user testuser033 with the following details
+## uid 5267
+## password: redhat
+## additional group: wheel
+
+useradd -u 5267 testuser033
+grep testuser033 /etc/passwd
+ls -l /home/
+passwd testuser033
+su - testuser033
+
+
+## ------------------------------------------------------
+## create a user testuser02 with the following details
+## uid 5120
+## password: redhat
+
+useradd -u 5120 testuser02
+grep testuser02 /etc/passwd
+ls -l /home/
+passwd testuser02
+su - testuser02
+
+
+
+## ------------------------------------------------------
+## all new users should have a file named welcome in their home folder after account creation
+
+[root@node5 ~]# echo "welcome" > /etc/skel/welcome
+[root@node5 ~]# useradd test2
+[root@node5 ~]# ll /home/test2/
+
+
+
+
+## ------------------------------------------------------
+## create a group named sharedgroup
+## add the user student101 with no login shell
+## add the user student102 as a member of sharedgroup
+## add user student103 as a member of sharedgroup with uuid 4444
+## all user passwords are: Password123
+## change student102's password to Amazing25
+## remove student102 from sharedgroup
+
+getent group sharedgroup
+groupadd sharedgroup
+
+useradd -s /sbin/nologin student101
+useradd -G sharedgroup student102
+useradd -u 4444 -G sharedgroup student103
+
+id student101
+id student102
+id student103
+
+for user in student101 student102 student103; do echo Password123 | passwd --stdin $user; done
+
+#echo student101:Password123 | chpasswd
+#echo student102:Password123 | chpasswd
+#echo student103:Password123 | chpasswd
+
+echo student102:Amazing25 | chpasswd
+
+gpasswd -d student102 sharedgroup
+
+getent group sharedgroup
+
+
+
+## ------------------------------------------------------
+## create a directory with the following details
+## dir: /home/collab
+## group owner: sales
+## dir should be readable and writeable to members of sales group but no other user besides root
+## files created in dir automatically have group ownership to sales group
+
+groupadd sales
+mkdir -p /home/collab
+ll /home/collab
+chgrp sales /home/collab
+ll /home/collab
+chmod 770 /home/collab
+ll /home/collab
+chmod 2770 /home/collab
+ll /home/collab
+touch /home/collab/file1
+ll /home/collab
+
+
+
+
+## ------------------------------------------------------
+
+
+
+
+
