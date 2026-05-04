@@ -1,0 +1,47 @@
+## ------------------------------------------------------
+## create lab local repo
+## ------------------------------------------------------
+
+/usr/bin/vmhgfs-fuse .host:/ /mnt/hgfs -o subtype=vmhgfs-fuse,allow_other
+
+mkdir /opt/iso; mount -o loop  /mnt/hgfs/ISO/rhel-9.5-x86_64-dvd.iso /opt/iso
+
+cp ...
+
+umount /mnt/iso
+
+
+
+vi /etc/yum.repos.d/rhel95.repo
+
+[BaseOS]
+name=Red Hat Enterprise Linux 9.5 - BaseOS
+baseurl=file:///opt/repos/rhel95/BaseOS
+gpgcheck=0
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+[AppStream]
+name=Red Hat Enterprise Linux 9.5 - AppStream
+baseurl=file::///opt/repos/rhel95/AppStream
+gpgcheck=0
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+dnf repolist
+
+[RHEL95-AppStream]
+name=Red Hat Enterprise Linux 9.5 - AppStream
+baseurl=http://172.10.10.50:8000/AppStream
+enabled=1
+gpgcheck=0
+
+[RHEL95-BaseOS]
+name=Red Hat Enterprise Linux 9.5 - BaseOS
+baseurl=http://172.10.10.50:8000/BaseOS
+enabled=1
+gpgcheck=0
+
+
+
+
