@@ -1,0 +1,78 @@
+## ------------------------
+## VOLUME MANAGEMENT
+##
+################################
+## filesystems (/var, /opt)
+################################
+## logical vols
+################################
+## volume groups
+################################
+## physical volumes
+################################
+## ------------------------
+## create a new logical vol
+## name: devops_lv
+## 32 extents, 20 MB
+## ext4 fielsystem
+## disk: /dev/nm.....
+## vg: devops_vg
+## mount: /mnt/devops_lv
+
+lsblk
+
+echo $(( 32 * 20 ))
+
+vgs
+lvs
+
+fdisk /dev/nvme0n3
++650M
+
+pvcreate /dev/nvme0n3p3
+pvs
+
+vgcreate cloud_vg /dev/nvme0n3p3 
+vgs
+
+lvcreate -l 100%FREE -n cloud_lv cloud_vg
+lvs
+
+mkfs.ext4 /dev/cloud_vg/cloud_lv
+
+mkdir /mnt/cloud_lv
+
+mount /dev/cloud_vg/cloud_lv /mnt/cloud_lv
+
+mount -a
+
+vi /etc/fstab
+/dev/cloud_vg/cloud_lv /mnt/cloud_lv ext4 defaults 0 0 
+
+
+
+
+## from /dev/nvme0n3 create 800MB swap partition
+fdisk /dev/nvme0n3
+new swap
+
+mkswap /dev/nvme0n3p2
+
+swapon
+
+vi /etc/fstab
+/dev/nvme0n3p2	swap	swap defaults 0 0
+
+mount -a
+
+swapon -a
+swapon
+lsblk
+
+
+
+## extend the lv devops_lv +250M
+
+lvextend -r -L 275M /dev/cloud_vg/cloud_lv
+
+--
