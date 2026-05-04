@@ -1,0 +1,11 @@
+## change TuneD profile to recommended
+
+dnf install tuned
+
+tuned-adm recommend
+tuned-adm profile virtual-guest
+tuned-adm active
+systemctl enable tuned
+systemctl restart tuned
+tuned-adm active
+
