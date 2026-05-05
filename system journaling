@@ -1,0 +1,18 @@
+#--------------------------------------------------
+# system journaling
+#
+#
+
+ls /run/log/journal
+
+vi /etc/systemd/journald.conf
+[Journal]
+Storage=persistent
+
+systemctl restart systemd-journald.service
+
+journalctl --flush 
+
+ls /var/log/journal
+
+
