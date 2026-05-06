@@ -75,15 +75,24 @@ getent group sharedgroup
 ## dir should be readable and writeable to members of sales group but no other user besides root
 ## files created in dir automatically have group ownership to sales group
 
+grep -i sales /etc/group
+
 groupadd sales
+
+ls -l /home
+
 mkdir -p /home/collab
 ll /home/collab
+
 chgrp sales /home/collab
 ll /home/collab
+
 chmod 770 /home/collab
 ll /home/collab
+
 chmod 2770 /home/collab
 ll /home/collab
+
 touch /home/collab/file1
 ll /home/collab
 
@@ -91,7 +100,43 @@ ll /home/collab
 
 
 ## ------------------------------------------------------
+# create group sysadm
+# create user harry, memeber of sysadm
+# create user natasha, memeber of sysadm
+# create user sarah, no shell login
+# all passwords are redhat
+# sysadm members can create new users
+# 
 
+grep -i sysadm /etc/group
+
+groupadd sysadm
+
+useradd -G sysadm harry
+useradd -G sysadm natasha
+useradd -s /sbin/nologin sarah
+
+passwd harry
+passwd natasha
+passwd sarah
+
+which useradd
+echo "%sysadm ALL=/usr/sbin/useradd" > /etc/sudoers.d/sysadm
+##echo "%sysadm localhost=/usr/sbin/useradd" > /etc/sudoers.d/sysadm
+
+which passwd
+echo "harry ALL=(ALL) NOPASSWD: /usr/bin/passwd" > /etc/sudoers.d/harry
+
+su - natasha
+sudo -l
+useradd -G sysadm test1
+
+su - harry
+sudo -l
+sudo passwd test1
+
+
+# 
 
 
 
