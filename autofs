@@ -1,4 +1,6 @@
-##-- autofs
+## ------------------------------------------------------
+## autofs
+## ------------------------------------------------------
 
 # configure autofs to mount an NFS export
 # server: 172.10.10.103 /home/guests/netuserx
@@ -7,25 +9,62 @@
 # pass: netuserx
 # requirement: must persist reboots
 
+## -------------------------
 # server
 mkdir /home/guests
-useradd -m -d /home/guests/netuserx netuserx
+
+groupadd -g 1100 guests
+useradd -u 1100 -g guests -m -d /home/guests/netuserx netuserx
 passwd netuserx
 
-dnf install nfs-utils -y
+dnf install nfs* -y
 systemctl enable --now nfs-server
+systemctl restart nfs-server
+systemctl status nfs-server
 
 vi /etc/exports
-/home/guests/netuserx 172.10.10.101(rw,sync,mo_root_squash)
+/home/guests/netuserx 172.10.10.101(rw,sync,no_root_squash)
 
 firewall-cmd --add-service=nfs --permanent
 firewall-cmd --add-service=mountd --permanent
-firewall-cmd --add-service=rpc.bin --permanent
+firewall-cmd --add-service=rpc-bind --permanent
 firewall-cmd --reload
-systmctl restart firewalld
+systemctl restart firewalld
+systemctl status firewalld
 
-exportfs -raw
+exportfs -rav
 
 
+## -------------------------
 # client
+
+mkdir /home/guests
+
+groupadd -g 1100 guests
+useradd -u 1100 -g guests -m -d /home/guests/netuserx netuserx
+passwd netuserx
+
+dnf install autofs* nfs* -y
+
+systemctl enable --now autofs
+systemctl restart autofs
+systemctl status autofs
+
+vi /etc/auto.master.d/netdir.autofs
+/netdir /etc/auto.master
+
+vi /etc/auto.netdir
+netuserx -rw 172.10.10.103:/home/guests/netuserx
+
+
+
+
+
+
+
+
+
+
+
+
 
