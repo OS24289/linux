@@ -75,8 +75,12 @@ mount -a
 mount -v | grep nfs
 
 # persist reboots
+umount /mnt/nfs/students/
 vi /etc/fstab
 node2:/srv/nfs/students  /mnt/nfs/students/  nfs  defaults  0 0
+
+mount -a
+mount -v | grep nfs
 
 
 
