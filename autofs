@@ -29,6 +29,7 @@ firewall-cmd --add-service=nfs --permanent
 firewall-cmd --add-service=mountd --permanent
 firewall-cmd --add-service=rpc-bind --permanent
 firewall-cmd --reload
+firewall-cmd --list-all
 systemctl restart firewalld
 systemctl status firewalld
 
