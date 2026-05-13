@@ -1,0 +1,85 @@
+
+
+# create an nfs share on node2
+# /srv/nfs/students
+
+
+#----------------------------------------------------------------
+# node 2
+# nfs server config
+#----------------------------------------------------------------
+
+# add nfs utils
+dnf install nfs-utils -y
+
+# nfs export
+mkdir -p /srv/nfs/students
+
+# group and user
+groupadd -g 12345 students
+useradd -u 12345 -G students student12345
+passwd student12345
+
+# nfs export ownership
+ll /srv/nfs/
+chown nobody:students /srv/nfs/students
+ll /srv/nfs/
+
+# set group permissions
+chmod g+s /srv/nfs/students
+chmod g+w /srv/nfs/students
+
+# give access to hosts
+vi /etc/exports
+/srv/nfs/students  10.10.10.0/24(sync,rw)
+
+# firewall
+firewall-cmd --add-service nfs --permanent
+firewall-cmd --reload
+firewall-cmd --list-all
+
+# enable nfs
+systemctl enable --now nfs-server
+
+# confirm
+systemctl status nfs-server
+ss -t -a
+ss -t -a | grep -i nfs
+
+
+#----------------------------------------------------------------
+# node 1
+# client config
+#----------------------------------------------------------------
+
+# add nfs utils
+dnf install nfs-utils -y
+
+# nfs mount dir
+mkdir -p /mnt/nfs/students/
+
+# group and user
+groupadd -g 12345 students
+useradd -u 12345 -G students student12345
+passwd student12345
+
+# mount node2 nfs share
+mount -t nfs node2:/srv/nfs/students /mnt/nfs/students/
+
+# confirm
+su - student12345
+echo "student12345" > /mnt/nfs/students/student12345.txt
+ls -tla /mnt/nfs/students/
+cat /mnt/nfs/students/student12345.txt
+mount -a
+mount -v | grep nfs
+
+# persist reboots
+vi /etc/fstab
+node2:/srv/nfs/students  /mnt/nfs/students/  nfs  defaults  0 0
+
+
+
+
+
+
