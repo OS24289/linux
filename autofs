@@ -1,30 +1,36 @@
-## ------------------------------------------------------
+#----------------------------------------------------------------
 ## autofs
-## ------------------------------------------------------
+#----------------------------------------------------------------
 
 # configure autofs to mount an NFS export
-# server: 172.10.10.103 /home/guests/netuserx
-# client: 172.10.10.101 /share/netuserx
-# user: netuserx
-# pass: netuserx
+# server: node2 /home/guests/netuserx
+# client: node1 /share/netuserx
+# user/pass: netuserx/netuserx
 # requirement: must persist reboots
 
-## -------------------------
-# server
-mkdir /home/guests
+#----------------------------------------------------------------
+# server (node2)
+#----------------------------------------------------------------
 
+## nfs directory
+mkdir -p /srv/nfs/netuserx
+
+## users and groups
 groupadd -g 1100 guests
 useradd -u 1100 -g guests -m -d /home/guests/netuserx netuserx
 passwd netuserx
 
+## install nfs utils
 dnf install nfs* -y
 systemctl enable --now nfs-server
 systemctl restart nfs-server
 systemctl status nfs-server
 
+## export dir and access
 vi /etc/exports
 /home/guests/netuserx 172.10.10.101(rw,sync,no_root_squash)
 
+## firewall
 firewall-cmd --add-service=nfs --permanent
 firewall-cmd --add-service=mountd --permanent
 firewall-cmd --add-service=rpc-bind --permanent
@@ -33,29 +39,39 @@ firewall-cmd --list-all
 systemctl restart firewalld
 systemctl status firewalld
 
+## sync exports
 exportfs -rav
 
 
-## -------------------------
-# client
+#----------------------------------------------------------------
+# client (node1)
+#----------------------------------------------------------------
 
-mkdir /home/guests
+## mount directory
+mkdir -p /home/guests
 
+## users and groups
 groupadd -g 1100 guests
 useradd -u 1100 -g guests -m -d /home/guests/netuserx netuserx
 passwd netuserx
 
+## install autofs
 dnf install autofs* nfs* -y
-
 systemctl enable --now autofs
 systemctl restart autofs
 systemctl status autofs
 
+## configure net directory and permissions 
 vi /etc/auto.master.d/netdir.autofs
 /netdir /etc/auto.master
 
 vi /etc/auto.netdir
 netuserx -rw 172.10.10.103:/home/guests/netuserx
+
+## confirm
+su - netuserx
+pwd
+ll
 
 
 
