@@ -2,9 +2,23 @@
 ## create lab local repo
 ## ------------------------------------------------------
 
+
+## find the mounted ISO
+mount
+mount | grep dvd
+
+
+## repo directory
+mkdir -p /opt/rocky10
+
+
+
+
+
+
 /usr/bin/vmhgfs-fuse .host:/ /mnt/hgfs -o subtype=vmhgfs-fuse,allow_other
 
-mkdir /opt/iso; mount -o loop  /mnt/hgfs/ISO/rhel-9.5-x86_64-dvd.iso /opt/iso
+mkdir /mnt/tmp; mount -o loop  /mnt/hgfs/ISO/rhel-9.5-x86_64-dvd.iso /opt/iso
 
 cp ...
 
